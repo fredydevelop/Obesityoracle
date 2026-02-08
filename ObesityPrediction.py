@@ -103,45 +103,20 @@ def obesity_recommendation(prediction):
 
 
 
-def obesity_predict_only(prediction):
-    if prediction == 0 or prediction == "0":
-        return (
-            "Insufficient Weight"
-        )
+def obesity_predict_only(predictions):
+    """Convert array of predictions to readable labels."""
+    label_map = {
+        0: "Insufficient Weight",
+        1: "Normal Weight",
+        2: "Overweight Level I",
+        3: "Overweight Level II",
+        4: "Obesity Type I",
+        5: "Obesity Type II",
+        6: "Obesity Type III"
+    }
+    # predictions could be numpy array
+    return [label_map.get(int(p), "Unknown") for p in predictions]
 
-    elif prediction == 1 or prediction == "1":
-        return (
-            "Normal Weight"
-        )
-
-    elif prediction == 2 or prediction == "2":
-        return (
-            "Overweight Level I"
-           
-        )
-
-    elif prediction == 3 or prediction == "3":
-        return (
-            "Overweight Level II"
-        )
-
-    elif prediction == 4 or prediction == "4":
-        return (
-            "Obesity Type I"
-        )
-
-    elif prediction == 5 or prediction == "5":
-        return (
-            "Obesity Type II"
-        )
-
-    elif prediction == 6 or prediction == "6":
-        return (
-            "Obesity Type III"
-        )
-
-    else:
-        return "Invalid prediction value. Please check the input."
 
 
 def encode_ordinal(df, column, categories):
@@ -381,7 +356,7 @@ def multi(input_data):
     predict = st.button("Predict")
     if predict:
         prediction = loaded_model.predict(std_dfinput)
-        interchange = [obesity_predict_only(prediction)]
+        interchange = obesity_predict_only(prediction)  # now this is a list of labels
         st.subheader('All the predictions')
         prediction_output = pd.Series(interchange, name='Obesity prediction results')
         prediction_id = pd.Series(np.arange(len(interchange)), name="User_ID")
@@ -431,5 +406,6 @@ if selection == "Multi Prediction":
 
     else:
         st.info("Upload your dataset !!")
+
 
 
