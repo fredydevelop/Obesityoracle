@@ -136,7 +136,7 @@ def obesity_detect(givendata):
     std_scaler_loaded=pk.load(open("obesityscaler.pkl", "rb"))
     std_X_resample=std_scaler_loaded.transform(input_data_reshaped)
     prediction = loaded_model.predict(std_X_resample)
-    solution=obesity_predict_only(prediction)
+    solution=obesity_recommendation(prediction)
     return solution
     
 
@@ -406,6 +406,7 @@ if selection == "Multi Prediction":
 
     else:
         st.info("Upload your dataset !!")
+
 
 
 
