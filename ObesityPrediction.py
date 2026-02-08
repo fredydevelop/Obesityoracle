@@ -312,131 +312,84 @@ def main():
 #         st.dataframe(dfresult)
 #         st.markdown(filedownload(dfresult), unsafe_allow_html=True)
         
-
-import pandas as pd
-import numpy as np
-import pickle as pk
-import streamlit as st
-from sklearn.preprocessing import OrdinalEncoder
-
-
 def encode_ordinal(df, column, categories):
     enc = OrdinalEncoder(categories=categories)
     df[column] = enc.fit_transform(df[[column]])
     return df
 
-
 def multi(input_data):
     loaded_model = pk.load(open("ObesityModel.sav", "rb"))
-    std_scaler_loaded = pk.load(open("obesityscaler.pkl", "rb"))
-
     dfinput = pd.read_csv(input_data)
 
-    # Drop index column if it exists
-    if dfinput.columns[0].lower() in ["unnamed: 0", "index"]:
-        dfinput.drop(dfinput.columns[0], axis=1, inplace=True)
-
-    # Drop unwanted columns safely
+    # Drop unused cols if they exist
     for col in ["SMOKE", "NCP", "NObeyesdad"]:
         if col in dfinput.columns:
             dfinput.drop(col, axis=1, inplace=True)
 
+    # Drop first index column if exists
+    if dfinput.columns[0].lower() in ["unnamed: 0", "id"]:  # common auto index names
+        dfinput = dfinput.drop(dfinput.columns[0], axis=1)
     dfinput = dfinput.reset_index(drop=True)
 
-    st.header("A view of your uploaded dataset")
-    st.dataframe(dfinput)
+    # Detect if dataset has categorical/string columns to preprocess
+    string_cols = dfinput.select_dtypes(include=["object"]).columns.tolist()
+    if string_cols:
+        # Yes/no columns
+        yes_no_cols = ["FAVC", "SCC", "family_history_with_overweight", "SMOKE", "Gender"]
+        for col in yes_no_cols:
+            if col in dfinput.columns:
+                dfinput[col] = dfinput[col].astype(str).str.strip().str.lower()
+                if col == "Gender":
+                    dfinput[col] = dfinput[col].replace({"male": 1, "female": 0}).astype("int64")
+                else:
+                    dfinput[col] = dfinput[col].replace({"no": 0, "yes": 1}).astype("int64")
 
-    # -----------------------------
-    # APPLY YOUR PREPROCESSING
-    # -----------------------------
+        # CAEC / CALC ordinal
+        if "CAEC" in dfinput.columns:
+            dfinput["CAEC"] = dfinput["CAEC"].astype(str).str.strip().str.lower()
+            caec_order = [["no", "sometimes", "frequently", "always"]]
+            dfinput = encode_ordinal(dfinput, "CAEC", caec_order)
 
-    # Gender
-    if "Gender" in dfinput.columns:
-        dfinput["Gender"] = dfinput["Gender"].replace({"Male": 1, "Female": 0}).astype("int64")
+        if "CALC" in dfinput.columns:
+            dfinput["CALC"] = dfinput["CALC"].astype(str).str.strip().str.lower()
+            calc_order = [["no", "sometimes", "frequently", "always"]]
+            dfinput = encode_ordinal(dfinput, "CALC", calc_order)
 
-    # Yes/No columns
-    yes_no_cols = ["FAVC", "SCC", "SMOKE", "family_history_with_overweight"]
-    for col in yes_no_cols:
-        if col in dfinput.columns:
-            dfinput[col] = dfinput[col].replace({"no": 0, "yes": 1}).astype("int64")
+        # MTRANS
+        if "MTRANS" in dfinput.columns:
+            dfinput["MTRANS"] = dfinput["MTRANS"].str.strip().str.lower()
+            dfinput["MTRANS"] = dfinput["MTRANS"].replace({
+                "public_transportation": 0,
+                "walking": 1,
+                "automobile": 2,
+                "motorbike": 3,
+                "bike": 4
+            }).astype("int64")
 
-    # CAEC ordinal
-    if "CAEC" in dfinput.columns:
-        caec_order = [["no", "Sometimes", "Frequently", "Always"]]
-        dfinput = encode_ordinal(dfinput, "CAEC", caec_order)
+    # Convert to numpy
+    dfinput_values = dfinput.values
 
-    # CALC ordinal
-    if "CALC" in dfinput.columns:
-        calc_order = [["no", "Sometimes", "Frequently", "Always"]]
-        dfinput = encode_ordinal(dfinput, "CALC", calc_order)
+    # Standard scaler
+    std_scaler_loaded = pk.load(open("obesityscaler.pkl", "rb"))
+    std_dfinput = std_scaler_loaded.transform(dfinput_values)
 
-    # MTRANS
-    if "MTRANS" in dfinput.columns:
-        dfinput["MTRANS"] = dfinput["MTRANS"].replace({
-            "Public_Transportation": 0,
-            "Walking": 1,
-            "Automobile": 2,
-            "Motorbike": 3,
-            "Bike": 4
-        })
+    # Show table
+    st.header('A view of your dataset')
+    st.dataframe(pd.DataFrame(dfinput_values, columns=dfinput.columns))
 
-    # -----------------------------
-    # ENSURE COLUMN ORDER MATCHES TRAINING
-    # -----------------------------
-    FEATURES = [
-        'Age', 'Gender', 'Height', 'Weight', 'CALC', 'FAVC', 'FCVC',
-        'SCC', 'CH2O', 'family_history_with_overweight', 'FAF', 'TUE',
-        'CAEC', 'MTRANS'
-    ]
-
-    # Check missing columns
-    missing = [col for col in FEATURES if col not in dfinput.columns]
-    if missing:
-        st.error(f"❌ Missing columns in uploaded file: {missing}")
-        st.stop()
-
-    # Reorder columns
-    dfinput = dfinput[FEATURES]
-
-    # Convert to numeric (safety)
-    dfinput = dfinput.apply(pd.to_numeric, errors="coerce")
-
-    # Check for NaN
-    if dfinput.isnull().sum().sum() > 0:
-        st.error("❌ Your dataset contains invalid values or empty cells. Please clean it and upload again.")
-        st.write("Missing values per column:")
-        st.write(dfinput.isnull().sum())
-        st.stop()
-
-    # -----------------------------
-    # SCALE + PREDICT
-    # -----------------------------
-    std_dfinput = std_scaler_loaded.transform(dfinput)
-
-    if st.button("Predict"):
+    # Predict button
+    predict = st.button("Predict")
+    if predict:
         prediction = loaded_model.predict(std_dfinput)
-
-        # Convert predictions to readable labels
-        reverse_labels = {
-            0: "Insufficient Weight",
-            1: "Normal Weight",
-            2: "Overweight Level I",
-            3: "Overweight Level II",
-            4: "Obesity Type I",
-            5: "Obesity Type II",
-            6: "Obesity Type III"
-        }
-
-        pred_labels = [reverse_labels[int(p)] for p in prediction]
-
-        st.subheader("All Predictions")
-
-        dfresult = pd.DataFrame({
-            "User_ID": np.arange(len(prediction)),
-            "Prediction": pred_labels
-        })
-
+        interchange = [obesity_predict_only(prediction)]
+        st.subheader('All the predictions')
+        prediction_output = pd.Series(interchange, name='Obesity prediction results')
+        prediction_id = pd.Series(np.arange(len(interchange)), name="User_ID")
+        dfresult = pd.concat([prediction_id, prediction_output], axis=1)
         st.dataframe(dfresult)
+        st.markdown(filedownload(dfresult), unsafe_allow_html=True)
+
+
 
 if selection == "Single Prediction":
     main()
@@ -478,4 +431,5 @@ if selection == "Multi Prediction":
 
     else:
         st.info("Upload your dataset !!")
+
 
