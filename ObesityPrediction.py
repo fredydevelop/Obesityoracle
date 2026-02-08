@@ -145,6 +145,9 @@ def obesity_predict_only(prediction):
 
 
 def encode_ordinal(df, column, categories):
+    # make sure it's string, remove spaces, normalize case
+    df[column] = df[column].astype(str).str.strip()
+
     enc = OrdinalEncoder(categories=categories)
     df[column] = enc.fit_transform(df[[column]])
     return df
@@ -475,3 +478,4 @@ if selection == "Multi Prediction":
 
     else:
         st.info("Upload your dataset !!")
+
