@@ -16,7 +16,7 @@ import joblib
 
 
 #configuring the page setup
-st.set_page_config(page_title='Stroke-prediction system',layout='centered')
+st.set_page_config(page_title='Obesity-prediction system',layout='centered')
 
 with st.sidebar:
     st.title("Home Page")
@@ -406,6 +406,7 @@ if selection == "Multi Prediction":
 
     else:
         st.info("Upload your dataset !!")
+
 
 
 
