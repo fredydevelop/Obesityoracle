@@ -141,7 +141,7 @@ def obesity_detect(givendata):
 
 #main function handling the input
 def main():
-    st.header("ObesityOracle (Obesity predictive system)")
+    st.header("Obesity predictive system")
     
     age = st.number_input('Age',format=None, key="age")
 
@@ -404,6 +404,7 @@ if selection == "Multi Prediction":
 
     else:
         st.info("Upload your dataset !!")
+
 
 
 
