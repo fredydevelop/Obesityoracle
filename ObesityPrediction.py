@@ -195,8 +195,12 @@ def main():
 
 
     waterconsumption = st.number_input('Daily water consumption measures (Litre)',format=None, key="water")
-    #st.write('waterconsumption level is ', waterconsumption)
-
+    if waterconsumption <= 1.5:
+        waterconsumption = 1
+    elif waterconsumption <= 2.5:
+        waterconsumption = 2
+    else:
+        waterconsumption = 3
 
     foodbetweenmeals = st.selectbox("How often do you eat food between meals (snacking)?",("","no", "sometimes", "frequently", "always"),key="foodbtween")
     if foodbetweenmeals != "":
@@ -236,16 +240,16 @@ def main():
     electronicdevice = st.selectbox('what is the frequency of Time using technology devices',("","low", "moderate","high"), key="electronicactivity")
     if electronicdevice != "":
         if electronicdevice== "low":
-            electronicdevice= 1
+            electronicdevice= 0
         if electronicdevice== "moderate":
-            electronicdevice= 2
+            electronicdevice= 1
         if electronicdevice== "high":
-            electronicdevice= 3
+            electronicdevice= 2
 
 
     transportation = st.selectbox("What is your means of transportation ?",("","public transportation", 'walking', 'automobile', 'motorbike','bike'),key="transportation")
     if transportation != "":
-        if transportation== "public Transportation":
+        if transportation== "public transportation":
             transportation= 1
         if transportation== "walking":
             transportation= 0
@@ -264,9 +268,9 @@ def main():
     # creating a button for Prediction
     if st.button("Predict"):
 
-        if age > 0 and gender != "" and height > 0 and weight > 0 \
+        if age > 0 and gender in (0,1) and height > 0 and weight > 0 \
             and caloric != "" and vegetableintake != "" and alcohol != "" \
-            and waterconsumption != "" and calorieintake != "" \
+            and waterconsumption > 0 and calorieintake != "" \
             and family_history_with_overweight != "":
 
             detectionResult = obesity_detect([
