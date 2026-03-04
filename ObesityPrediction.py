@@ -147,9 +147,9 @@ def main():
 
     gender = st.selectbox('Gender',("",'Male' ,'Female'),key="sex")
     if gender !='':
-        if (gender=='Male'):
+        if gender=='Male':
             gender=1
-        else:
+        if gender=='Female':
             gender=0
 
     height = st.number_input('Height  (meters)',format=None, key="height")
@@ -159,19 +159,19 @@ def main():
     alcohol = st.selectbox("Do you consume alcohol ?",("","no", "Sometimes", "Frequently", "Always"),key="alcohol")
     if alcohol != "":
         if alcohol== "no":
-            alcohol= 0
+            alcohol = 0
         if alcohol== "Sometimes":
             alcohol= 1
         if alcohol== "Frequently":
             alcohol= 2
-        else:
-            alcohol=3
+        if alcohol== "Always":
+            alcohol= 3
 
     caloric = st.selectbox("Frequent consumption of high caloric food ? ",("","yes", "no"),key="caloricfood")
     if caloric != "":
         if caloric== "yes":
             caloric=1
-        else:
+        if caloric== "no":
             caloric=0
 
 
@@ -181,16 +181,16 @@ def main():
             vegetableintake= 1
         if vegetableintake== "medium":
             vegetableintake= 2
-        else:
-            vegetableintake=3
+        if vegetableintake== "high":
+            vegetableintake= 3
     #st.write("Frequent consumption is :", vegetableintake,)
 
 
     calorieintake = st.selectbox("Do you monitor your calorie intake ? ",("","yes", "no"),key="calorieintake")
     if calorieintake != "":
-        if calorieintake== "yes":
-            calorieintake=1
-        else:
+        if calorieintake == "yes":
+            calorieintake =1
+        if calorieintake == "no":
             calorieintake=0
 
 
@@ -198,56 +198,63 @@ def main():
     #st.write('waterconsumption level is ', waterconsumption)
 
 
-    foodbetweenmeals = st.selectbox("How often do you eat food between meals (snacking)?",("","no", "Sometimes", "Frequently", "Always"),key="foodbtween")
+    foodbetweenmeals = st.selectbox("How often do you eat food between meals (snacking)?",("","no", "sometimes", "frequently", "always"),key="foodbtween")
     if foodbetweenmeals != "":
         if foodbetweenmeals== "no":
             foodbetweenmeals= 0
-        if foodbetweenmeals== "Sometimes":
+        if foodbetweenmeals== "sometimes":
             foodbetweenmeals= 1
-        if foodbetweenmeals== "Frequently":
+        if foodbetweenmeals== "frequently":
             foodbetweenmeals= 2
-        else:
-            foodbetweenmeals=3
+        if foodbetweenmeals== "always":
+            foodbetweenmeals= 3
 
 
     family_history_with_overweight = st.selectbox('Family history Overweight/Obesity',("","yes", "no",),key="familyhistory")
     if family_history_with_overweight != "":
-        if (family_history_with_overweight=='yes'):
+        if family_history_with_overweight=='yes':
             family_history_with_overweight=1
 
-        else:
+        if family_history_with_overweight=='no':
             family_history_with_overweight=0
 
     
-    physicalactivity = st.selectbox('what is the frequency of your physical activities', ("","Light", "Moderate","High"), key="physicalactivity")
+    physicalactivity = st.selectbox('what is the frequency of your physical activities', ("","none", "1–2 days/week","3–4 days/week","5+ days/week"), key="physicalactivity")
     if physicalactivity != "":
-        if physicalactivity== "Light":
+        if physicalactivity == "none":
+            physicalactivity= 0
+        if physicalactivity == "1–2 days/week":
             physicalactivity= 1
-        if physicalactivity== "Medium":
+        if physicalactivity== "3–4 days/week":
             physicalactivity= 2
-        else:
-            physicalactivity=3
+        if physicalactivity== "5+ days/week":
+            physicalactivity= 3
 
-    electronicdevice = st.selectbox('what is the frequency of Time using technology devices',("","Low", "Moderate","High"), key="electronicactivity")
+
+
+
+    electronicdevice = st.selectbox('what is the frequency of Time using technology devices',("","low", "moderate","high"), key="electronicactivity")
     if electronicdevice != "":
         if electronicdevice== "low":
             electronicdevice= 1
         if electronicdevice== "moderate":
             electronicdevice= 2
-        else:
-            electronicdevice=3
+        if electronicdevice== "high":
+            electronicdevice= 3
 
 
-    transportation = st.selectbox("What is your means of transportation ?",("","Public_Transportation", 'Walking', 'Automobile', 'Motorbike','Bike'),key="transportation")
+    transportation = st.selectbox("What is your means of transportation ?",("","public transportation", 'walking', 'automobile', 'motorbike','bike'),key="transportation")
     if transportation != "":
-        if transportation== "Public_Transportation":
-            transportation= 0
-        if transportation== "Sometimes":
+        if transportation== "public Transportation":
             transportation= 1
-        if transportation== "Frequently":
+        if transportation== "walking":
+            transportation= 0
+        if transportation== "automobile":
             transportation= 2
-        else:
-            transportation=3
+        if transportation== "motorbike":
+            transportation= 3
+        if transportation== "bike":
+            transportation= 4
 
     st.write("\n")
     st.write("\n")
@@ -255,9 +262,24 @@ def main():
     detectionResult = '' #for displaying result
     
     # creating a button for Prediction
-    if age > 0  and gender!="" and height > 0 and weight > 0  and caloric!="" and vegetableintake !="" and alcohol !="" and waterconsumption!="" and calorieintake!="" and family_history_with_overweight!="" and st.button('Predict'):
-        detectionResult = obesity_detect([age,gender,height,weight, alcohol,caloric,vegetableintake, calorieintake, waterconsumption,family_history_with_overweight, physicalactivity,electronicdevice,foodbetweenmeals, transportation])
-        st.success(detectionResult)
+    if st.button("Predict"):
+
+        if age > 0 and gender != "" and height > 0 and weight > 0 \
+            and caloric != "" and vegetableintake != "" and alcohol != "" \
+            and waterconsumption != "" and calorieintake != "" \
+            and family_history_with_overweight != "":
+
+            detectionResult = obesity_detect([
+                age, gender, height, weight, alcohol, caloric,
+                vegetableintake, calorieintake, waterconsumption,
+                family_history_with_overweight, physicalactivity,
+                electronicdevice, foodbetweenmeals, transportation
+            ])
+
+            st.success(detectionResult)
+
+        else:
+            st.warning("Please fill all fields before predicting.")
      
 def encode_ordinal(df, column, categories):
     enc = OrdinalEncoder(categories=categories)
@@ -378,6 +400,7 @@ if selection == "Multi Prediction":
 
     else:
         st.info("Upload your dataset !!")
+
 
 
 
