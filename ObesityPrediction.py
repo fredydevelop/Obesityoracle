@@ -19,7 +19,6 @@ import joblib
 st.set_page_config(page_title='Obesity-prediction system',layout='centered')
 
 with st.sidebar:
-    st.title("Home Page")
     selection=option_menu(menu_title="Main Menu",options=["Single Prediction","Multi Prediction"],icons=["cast","book","cast"],menu_icon="house",default_index=0)
 
 
@@ -144,91 +143,111 @@ def obesity_detect(givendata):
 def main():
     st.header("ObesityOracle (Obesity predictive system)")
     
-    #getting user input
-    
-    age = st.number_input('What is your age',format=None, key="age")
-    st.write("Patient's age is :", age, 'years old')
+    age = st.number_input('Age',format=None, key="age")
 
     gender = st.selectbox('Gender',("",'Male' ,'Female'),key="sex")
-    if (gender=='Male'):
-        gender=1
-    else:
-        gender=0
+    if gender !='':
+        if (gender=='Male'):
+            gender=1
+        else:
+            gender=0
 
-    option4 = st.number_input('Height',format=None, key="height")
-    st.write("Your height is :", option4,)
+    height = st.number_input('Height  (meters)',format=None, key="height")
 
-    option5 = st.number_input('Weight',format=None, key="weight")
-    st.write("Your weight is :", option5,)
-
+    weight = st.number_input('Weight  (kilograms)',format=None, key="weight")
 
     alcohol = st.selectbox("Do you consume alcohol ?",("","no", "Sometimes", "Frequently", "Always"),key="alcohol")
-    if alcohol== "no":
-        alcohol= 0
-    if alcohol== "Sometimes":
-        alcohol= 1
-    if alcohol== "Frequently":
-        alcohol= 2
-    else:
-        alcohol=3
+    if alcohol != "":
+        if alcohol== "no":
+            alcohol= 0
+        if alcohol== "Sometimes":
+            alcohol= 1
+        if alcohol== "Frequently":
+            alcohol= 2
+        else:
+            alcohol=3
 
     caloric = st.selectbox("Frequent consumption of high caloric food ? ",("","yes", "no"),key="caloricfood")
-    if caloric== "yes":
-        caloric=1
-    else:
-        caloric=0
+    if caloric != "":
+        if caloric== "yes":
+            caloric=1
+        else:
+            caloric=0
 
 
-    option7 = st.number_input('Frequency of consumption of vegetables',format=None, key="veg")
-    st.write("Your frequesnt consumption is :", option7,)
+    vegetableintake = st.selectbox('Frequency of consumption of vegetables',("","low", "medium", "high"), key="veg")
+    if vegetableintake != "":
+        if vegetableintake== "low":
+            vegetableintake= 1
+        if vegetableintake== "medium":
+            vegetableintake= 2
+        else:
+            vegetableintake=3
+    #st.write("Frequent consumption is :", vegetableintake,)
 
 
     calorieintake = st.selectbox("Do you monitor your calorie intake ? ",("","yes", "no"),key="calorieintake")
-    if calorieintake== "yes":
-        calorieintake=1
-    else:
-        calorieintake=0
+    if calorieintake != "":
+        if calorieintake== "yes":
+            calorieintake=1
+        else:
+            calorieintake=0
 
 
-    waterconsumption = st.number_input('Daily water consumption measures',format=None, key="water")
-    st.write('Your average waterconsumption level is ', waterconsumption)
+    waterconsumption = st.number_input('Daily water consumption measures (Litre)',format=None, key="water")
+    #st.write('waterconsumption level is ', waterconsumption)
 
 
     foodbetweenmeals = st.selectbox("How often do you eat food between meals (snacking)?",("","no", "Sometimes", "Frequently", "Always"),key="foodbtween")
-    if foodbetweenmeals== "no":
-        foodbetweenmeals= 0
-    if foodbetweenmeals== "Sometimes":
-        foodbetweenmeals= 1
-    if foodbetweenmeals== "Frequently":
-        foodbetweenmeals= 2
-    else:
-        foodbetweenmeals=3
+    if foodbetweenmeals != "":
+        if foodbetweenmeals== "no":
+            foodbetweenmeals= 0
+        if foodbetweenmeals== "Sometimes":
+            foodbetweenmeals= 1
+        if foodbetweenmeals== "Frequently":
+            foodbetweenmeals= 2
+        else:
+            foodbetweenmeals=3
 
 
     family_history_with_overweight = st.selectbox('Family history Overweight/Obesity',("","yes", "no",),key="familyhistory")
-    if (family_history_with_overweight=='yes'):
-        family_history_with_overweight=1
+    if family_history_with_overweight != "":
+        if (family_history_with_overweight=='yes'):
+            family_history_with_overweight=1
 
-    else:
-        family_history_with_overweight=0
+        else:
+            family_history_with_overweight=0
 
     
-    physicalactivity = st.number_input('what is the frequency of your physical activities',format=None, key="physicalactivity")
-    st.write('Your physical activity frequency is ', physicalactivity)
+    physicalactivity = st.selectbox('what is the frequency of your physical activities', ("","Light", "Moderate","High"), key="physicalactivity")
+    if physicalactivity != "":
+        if physicalactivity== "Light":
+            physicalactivity= 1
+        if physicalactivity== "Medium":
+            physicalactivity= 2
+        else:
+            physicalactivity=3
 
-    electronicdevice = st.number_input('what is the frequency of Time using technology devices',format=None, key="electronicactivity")
-    st.write('The frequency of your time using technology devices', electronicdevice)
+    electronicdevice = st.selectbox('what is the frequency of Time using technology devices',("","Low", "Moderate","High"), key="electronicactivity")
+    if electronicdevice != "":
+        if electronicdevice== "low":
+            electronicdevice= 1
+        if electronicdevice== "moderate":
+            electronicdevice= 2
+        else:
+            electronicdevice=3
 
 
     transportation = st.selectbox("What is your means of transportation ?",("","Public_Transportation", 'Walking', 'Automobile', 'Motorbike','Bike'),key="transportation")
-    if transportation== "Public_Transportation":
-        transportation= 0
-    if transportation== "Sometimes":
-        transportation= 1
-    if transportation== "Frequently":
-        transportation= 2
-    else:
-        transportation=3
+    if transportation != "":
+        if transportation== "Public_Transportation":
+            transportation= 0
+        if transportation== "Sometimes":
+            transportation= 1
+        if transportation== "Frequently":
+            transportation= 2
+        else:
+            transportation=3
 
     st.write("\n")
     st.write("\n")
@@ -236,57 +255,10 @@ def main():
     detectionResult = '' #for displaying result
     
     # creating a button for Prediction
-    if age!="" and gender!="" and option4!="" and option5!="" and caloric!="" and option7 !="" and alcohol !="" and waterconsumption!="" and calorieintake!="" and family_history_with_overweight!="" and st.button('Predict'):
-        detectionResult = obesity_detect([age,gender,option4,option5, alcohol,caloric,option7, calorieintake, waterconsumption,family_history_with_overweight, physicalactivity,electronicdevice,foodbetweenmeals, transportation])
+    if age > 0  and gender!="" and height > 0 and weight > 0  and caloric!="" and vegetableintake !="" and alcohol !="" and waterconsumption!="" and calorieintake!="" and family_history_with_overweight!="" and st.button('Predict'):
+        detectionResult = obesity_detect([age,gender,height,weight, alcohol,caloric,vegetableintake, calorieintake, waterconsumption,family_history_with_overweight, physicalactivity,electronicdevice,foodbetweenmeals, transportation])
         st.success(detectionResult)
-
-
-
-# def multi(input_data):
-#     loaded_model=pk.load(open("ObesityModel.sav", "rb"))
-#     dfinput = pd.read_csv(input_data)
-#     if "SMOKE" or "smoke" in dfinput.iloc[1:]:
-#         dfinput.drop("SMOKE",axis=1,inplace=True)
-#     if "NCP" or "ncp" in dfinput.iloc[1:]:
-#         dfinput.drop("NCP",axis=1,inplace=True)
-#     if "NObeyesdad" in dfinput.iloc[1:]:
-#         dfinput.drop("NObeyesdad",axis=1,inplace=True)
-    
-#     dfinput=dfinput.drop(dfinput.columns[0],axis=1)
-#     dfinput=dfinput.reset_index(drop=True)
-
-#     st.header('A view of your uploaded dataset')
-#     st.markdown('')
-#     st.dataframe(dfinput)
-
-#     dfinput=dfinput.values
-#     std_scaler_loaded=pk.load(open("obesityscaler.pkl", "rb"))
-#     std_dfinput=std_scaler_loaded.transform(dfinput)
-    
-    
-#     predict=st.button("predict")
-
-
-#     if predict:
-#         prediction = loaded_model.predict(std_dfinput)
-#         interchange=[]
-#         condition=obesity_predict_only(prediction)
-#         interchange.append(condition)
-#         # for i in prediction:
-#         #     if i==1:
-#         #         newi="Stroke issues present"
-#         #         interchange.append(newi)
-#         #     elif i==0:
-#         #         newi="No Stroke issues"
-#         #         interchange.append(newi)
-            
-#         st.subheader('All the predictions')
-#         prediction_output = pd.Series(interchange, name='Obesity prediction results')
-#         prediction_id = pd.Series(np.arange(len(interchange)),name="User_ID")
-#         dfresult = pd.concat([prediction_id, prediction_output], axis=1)
-#         st.dataframe(dfresult)
-#         st.markdown(filedownload(dfresult), unsafe_allow_html=True)
-        
+     
 def encode_ordinal(df, column, categories):
     enc = OrdinalEncoder(categories=categories)
     df[column] = enc.fit_transform(df[[column]])
@@ -406,6 +378,7 @@ if selection == "Multi Prediction":
 
     else:
         st.info("Upload your dataset !!")
+
 
 
 
