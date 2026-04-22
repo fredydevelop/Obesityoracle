@@ -363,12 +363,14 @@ def multi(input_data):
         recommendations = [obesity_recommendation(int(p)) for p in prediction]
 
         st.subheader("All the predictions")
-
         dfresult = pd.DataFrame({
             "User_ID": np.arange(len(prediction)),
-            "Obesity prediction results": prediction_labels,
-            "Recommendation": recommendations
+            "Category": [r[0] for r in recommendations_split],
+            "Recommendation 1": [r[1] for r in recommendations_split],
+            "Recommendation 2": [r[2] for r in recommendations_split],
+            "Recommendation 3": [r[3] for r in recommendations_split],
         })
+        
 
         st.dataframe(dfresult)
         st.markdown(filedownload(dfresult), unsafe_allow_html=True)
