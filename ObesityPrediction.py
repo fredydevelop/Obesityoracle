@@ -35,7 +35,6 @@ def filedownload(df):
 def obesity_recommendation(prediction):
     if prediction == 0 or prediction == "0":
         return (
-            "Insufficient Weight:\n"
             "Recommendation:\n"
             "1. Eat a balanced diet rich in protein, healthy fats, and complex carbs.\n"
             "2. Engage in strength training to build healthy muscle mass.\n"
@@ -44,7 +43,6 @@ def obesity_recommendation(prediction):
 
     elif prediction == 1 or prediction == "1":
         return (
-            "Normal Weight:\n"
             "Recommendation:\n"
             "1. Maintain a balanced diet.\n"
             "2. Engage in regular physical activity.\n"
@@ -53,7 +51,6 @@ def obesity_recommendation(prediction):
 
     elif prediction == 2 or prediction == "2":
         return (
-            "Overweight Level I:\n"
             "Recommendation:\n"
             "1. Focus on a healthy, calorie-controlled diet.\n"
             "2. Increase physical activity with regular exercise like walking or light cardio.\n"
@@ -62,7 +59,6 @@ def obesity_recommendation(prediction):
 
     elif prediction == 3 or prediction == "3":
         return (
-            "Overweight Level II:\n"
             "Recommendation:\n"
             "1. Adopt a structured diet plan.\n"
             "2. Increase exercise intensity and reduce processed foods.\n"
@@ -71,7 +67,6 @@ def obesity_recommendation(prediction):
 
     elif prediction == 4 or prediction == "4":
         return (
-            "Obesity Type I:\n"
             "Recommendation:\n"
             "1. Start a comprehensive weight management plan including diet and regular exercise.\n"
             "2. Implement lifestyle changes like better sleep and stress management.\n"
@@ -80,7 +75,6 @@ def obesity_recommendation(prediction):
 
     elif prediction == 5 or prediction == "5":
         return (
-            "Obesity Type II:\n"
             "Recommendation:\n"
             "1. Seek guidance from a healthcare provider for a tailored weight loss plan.\n"
             "2. Follow a structured diet and exercise program under supervision.\n"
@@ -90,7 +84,6 @@ def obesity_recommendation(prediction):
     elif prediction == 6 or prediction == "6":
         return (
             "Obesity Type III:\n"
-            "Recommendation:\n"
             "1. Consult a healthcare provider for a personalized treatment plan.\n"
             "2. Focus on medical guidance, diet therapy, and supervised physical activity.\n"
             "3. Monitor for obesity-related complications and manage them promptly."
