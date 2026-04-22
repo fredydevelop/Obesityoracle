@@ -35,7 +35,6 @@ def filedownload(df):
 def obesity_recommendation(prediction):
     if prediction == 0 or prediction == "0":
         return (
-            "Recommendation:\n"
             "1. Eat a balanced diet rich in protein, healthy fats, and complex carbs.\n"
             "2. Engage in strength training to build healthy muscle mass.\n"
             "3. Consult a nutritionist if needed to gain weight safely."
@@ -43,7 +42,6 @@ def obesity_recommendation(prediction):
 
     elif prediction == 1 or prediction == "1":
         return (
-            "Recommendation:\n"
             "1. Maintain a balanced diet.\n"
             "2. Engage in regular physical activity.\n"
             "3. Schedule routine health check-ups to stay healthy."
@@ -51,7 +49,6 @@ def obesity_recommendation(prediction):
 
     elif prediction == 2 or prediction == "2":
         return (
-            "Recommendation:\n"
             "1. Focus on a healthy, calorie-controlled diet.\n"
             "2. Increase physical activity with regular exercise like walking or light cardio.\n"
             "3. Monitor your weight regularly and set achievable goals."
@@ -59,7 +56,6 @@ def obesity_recommendation(prediction):
 
     elif prediction == 3 or prediction == "3":
         return (
-            "Recommendation:\n"
             "1. Adopt a structured diet plan.\n"
             "2. Increase exercise intensity and reduce processed foods.\n"
             "3. Consider consulting a dietitian for personalized guidance."
@@ -67,7 +63,6 @@ def obesity_recommendation(prediction):
 
     elif prediction == 4 or prediction == "4":
         return (
-            "Recommendation:\n"
             "1. Start a comprehensive weight management plan including diet and regular exercise.\n"
             "2. Implement lifestyle changes like better sleep and stress management.\n"
             "3. Have regular health check-ups for blood pressure, blood sugar, and cholesterol."
@@ -75,7 +70,6 @@ def obesity_recommendation(prediction):
 
     elif prediction == 5 or prediction == "5":
         return (
-            "Recommendation:\n"
             "1. Seek guidance from a healthcare provider for a tailored weight loss plan.\n"
             "2. Follow a structured diet and exercise program under supervision.\n"
             "3. Monitor health parameters and check for obesity-related complications."
@@ -83,7 +77,6 @@ def obesity_recommendation(prediction):
 
     elif prediction == 6 or prediction == "6":
         return (
-            "Obesity Type III:\n"
             "1. Consult a healthcare provider for a personalized treatment plan.\n"
             "2. Focus on medical guidance, diet therapy, and supervised physical activity.\n"
             "3. Monitor for obesity-related complications and manage them promptly."
@@ -363,7 +356,8 @@ def multi(input_data):
             "Recommendation": recommendations
         })
 
-        st.dataframe(dfresult)
+        #st.dataframe(dfresult)
+        st.markdown(dfresult.to_html(escape=False), unsafe_allow_html=True)
         st.markdown(filedownload(dfresult), unsafe_allow_html=True)
 
 
