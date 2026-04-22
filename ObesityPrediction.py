@@ -292,7 +292,18 @@ def encode_ordinal(df, column, categories):
 
 def multi(input_data):
     loaded_model = pk.load(open("ObesityModel.sav", "rb"))
-    dfinput = pd.read_csv(input_data)
+
+    # Read file based on extension
+    file_name = input_data.name.lower()
+    ext = os.path.splitext(file_name)[1]
+
+    if ext == ".csv":
+        dfinput = pd.read_csv(input_data)
+    elif ext in [".xls", ".xlsx"]:
+        dfinput = pd.read_excel(input_data)
+    else:
+        st.error("Unsupported file format.")
+        return
 
     # Drop unused cols if they exist
     for col in ["SMOKE", "NCP", "NObeyesdad"]:
@@ -300,14 +311,14 @@ def multi(input_data):
             dfinput.drop(col, axis=1, inplace=True)
 
     # Drop first index column if exists
-    if dfinput.columns[0].lower() in ["unnamed: 0", "id"]:  # common auto index names
+    if dfinput.columns[0].lower() in ["unnamed: 0", "id"]:
         dfinput = dfinput.drop(dfinput.columns[0], axis=1)
+
     dfinput = dfinput.reset_index(drop=True)
 
     # Detect if dataset has categorical/string columns to preprocess
     string_cols = dfinput.select_dtypes(include=["object"]).columns.tolist()
     if string_cols:
-        # Yes/no columns
         yes_no_cols = ["FAVC", "SCC", "family_history_with_overweight", "SMOKE", "Gender"]
         for col in yes_no_cols:
             if col in dfinput.columns:
@@ -317,7 +328,6 @@ def multi(input_data):
                 else:
                     dfinput[col] = dfinput[col].replace({"no": 0, "yes": 1}).astype("int64")
 
-        # CAEC / CALC ordinal
         if "CAEC" in dfinput.columns:
             dfinput["CAEC"] = dfinput["CAEC"].astype(str).str.strip().str.lower()
             caec_order = [["no", "sometimes", "frequently", "always"]]
@@ -328,9 +338,8 @@ def multi(input_data):
             calc_order = [["no", "sometimes", "frequently", "always"]]
             dfinput = encode_ordinal(dfinput, "CALC", calc_order)
 
-        # MTRANS
         if "MTRANS" in dfinput.columns:
-            dfinput["MTRANS"] = dfinput["MTRANS"].str.strip().str.lower()
+            dfinput["MTRANS"] = dfinput["MTRANS"].astype(str).str.strip().str.lower()
             dfinput["MTRANS"] = dfinput["MTRANS"].replace({
                 "public_transportation": 0,
                 "walking": 1,
@@ -339,26 +348,28 @@ def multi(input_data):
                 "bike": 4
             }).astype("int64")
 
-    # Convert to numpy
-    dfinput_values = dfinput.values
-
     # Standard scaler
     std_scaler_loaded = pk.load(open("obesityscaler.pkl", "rb"))
-    std_dfinput = std_scaler_loaded.transform(dfinput_values)
+    std_dfinput = std_scaler_loaded.transform(dfinput.values)
 
-    # Show table
-    st.header('A view of your dataset')
-    st.dataframe(pd.DataFrame(dfinput_values, columns=dfinput.columns))
+    st.header("A view of your dataset")
+    st.dataframe(dfinput)
 
-    # Predict button
     predict = st.button("Predict")
     if predict:
         prediction = loaded_model.predict(std_dfinput)
-        interchange = obesity_predict_only(prediction)  # now this is a list of labels
-        st.subheader('All the predictions')
-        prediction_output = pd.Series(interchange, name='Obesity prediction results')
-        prediction_id = pd.Series(np.arange(len(interchange)), name="User_ID")
-        dfresult = pd.concat([prediction_id, prediction_output], axis=1)
+
+        prediction_labels = obesity_predict_only(prediction)
+        recommendations = [obesity_recommendation(int(p)) for p in prediction]
+
+        st.subheader("All the predictions")
+
+        dfresult = pd.DataFrame({
+            "User_ID": np.arange(len(prediction)),
+            "Obesity prediction results": prediction_labels,
+            "Recommendation": recommendations
+        })
+
         st.dataframe(dfresult)
         st.markdown(filedownload(dfresult), unsafe_allow_html=True)
 
