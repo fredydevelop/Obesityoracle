@@ -357,7 +357,7 @@ def multi(input_data):
         })
 
         #st.dataframe(dfresult)
-        st.markdown(index=False,dfresult.to_html(escape=False), unsafe_allow_html=True)
+        st.markdown(dfresult.to_html(index=False,escape=False), unsafe_allow_html=True)
         st.markdown(filedownload(dfresult), unsafe_allow_html=True)
 
 
