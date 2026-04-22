@@ -366,9 +366,9 @@ def multi(input_data):
         dfresult = pd.DataFrame({
             "User_ID": np.arange(len(prediction)),
             "Category": [r[0] for r in recommendations_split],
-            "Recommendation 1": [r[1] for r in recommendations_split],
-            "Recommendation 2": [r[2] for r in recommendations_split],
-            "Recommendation 3": [r[3] for r in recommendations_split],
+            "Recommendation 1": [r[1] for r in recommendations],
+            "Recommendation 2": [r[2] for r in recommendations],
+            "Recommendation 3": [r[3] for r in recommendations],
         })
         
 
