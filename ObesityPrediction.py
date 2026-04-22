@@ -351,12 +351,13 @@ def multi(input_data):
         st.subheader("All the predictions")
 
         dfresult = pd.DataFrame({
+            "User_ID": np.arange(len(prediction)),
             "Obesity prediction results": prediction_labels,
             "Recommendation": recommendations
         })
 
         #st.dataframe(dfresult)
-        st.markdown(dfresult.to_html(escape=False), unsafe_allow_html=True)
+        st.markdown(index=False,dfresult.to_html(escape=False), unsafe_allow_html=True)
         st.markdown(filedownload(dfresult), unsafe_allow_html=True)
 
 
