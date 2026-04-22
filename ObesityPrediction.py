@@ -351,7 +351,6 @@ def multi(input_data):
         st.subheader("All the predictions")
 
         dfresult = pd.DataFrame({
-            "User_ID": np.arange(len(prediction)),
             "Obesity prediction results": prediction_labels,
             "Recommendation": recommendations
         })
